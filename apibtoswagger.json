@@ -1,42 +1,375 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "msontest",
+        "title": "Identity API",
         "version": "",
-        "description": "Polls is a simple API allowing consumers to view polls and vote in them.\n\n"
+        "description": "## Schemas\n\nAll API access is over https and accessed from api.databank.com.au (change later). All data is sent and received as JSON.\n\nBlank fields are included as null instead of being omitted.\n\nAll timestamps are returned in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ\n\n#### Summary representations\n\nWhen you fetch a list of resources, the response includes a subset of the attributes for each resource.\n\n*Example* Fetching the documents for the ando identity returns the summary representation of each document\n\n```\nGET /identities/ando/documents\n```\n\n#### Detailed representations\n\nWhen you fetch a specific resource, the response typically includes all attributes for that resource.\n\n*Example* Fetching the document owned by ando returns the detailed representation of that document\n\n```\nGET /identities/ando/documents/1234\n```\n\n#### Parameters\n\nFor GET requests, optional parameters not specified as a path parameter are passed as HTTP query string parameter\n\n```\ncurl -i \"http://api.databank.com/identities?delegated=true\"\n```\n\nFor POST, PUT, PATCH and DELETE requests, parameters not in the URL should be JSON encoded with Content Type 'application/json'\n\n#### Errors\n\n\n"
     },
+    "host": "noname7.apiblueprint.org",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
     "paths": {
-        "/questions": {
+        "/users": {
+            "post": {
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {},
+                        "examples": {}
+                    }
+                },
+                "summary": "New user",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$schema": "http://json-schema.org/draft-04/schema#",
+                            "type": "object",
+                            "properties": {
+                                "first_name": {
+                                    "type": "string",
+                                    "description": "First name"
+                                },
+                                "last_name": {
+                                    "type": "string",
+                                    "description": "Last name"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "description": "Email"
+                                },
+                                "login": {
+                                    "type": "string",
+                                    "description": "Login??? username???"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "/users/{user_id}": {
             "get": {
                 "responses": {
                     "200": {
                         "description": "OK",
                         "headers": {},
                         "examples": {
-                            "application/json": [
-                                {
-                                    "question": "Favourite programming language?",
-                                    "published_at": "2014-11-11T08:40:51.620Z",
-                                    "url": "/questions/1",
-                                    "choices": [
-                                        {
-                                            "choice": "Javascript",
-                                            "url": "/questions/1/choices/1",
-                                            "votes": 2048
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        "schema": {
-                            "$schema": "http://json-schema.org/draft-04/schema#",
-                            "type": "array"
+                            "application/json": {
+                                "id": "1",
+                                "login": "davidhoneypot",
+                                "email": "david@honeypot.com",
+                                "type": "user",
+                                "created_at": "2000-01-01T01:11:11Z",
+                                "updated_at": "2000-01-01T01:11:11Z"
+                            }
                         }
                     }
                 },
-                "summary": "List All Questions",
+                "summary": "Get account",
                 "description": "",
-                "tags": [],
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ]
+            },
+            "patch": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {}
+                    }
+                },
+                "summary": "Update the account",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": []
+            }
+        },
+        "/users/{user_id}/devices": {
+            "post": {
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "summary": "Add device",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ]
+            },
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "summary": "List devices",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ]
+            }
+        },
+        "/users/{user_id}/devices/{device_id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "summary": "Get device",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ]
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "summary": "Delete device",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ]
+            }
+        },
+        "/users/{user_id}/identity": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {}
+                    }
+                },
+                "summary": "Get identity profile",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": []
+            }
+        },
+        "/users/{user_id}/identity/evidence": {
+            "post": {
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {
+                                "id": "abcd1234",
+                                "type_code": 1234,
+                                "type_description": "Victoria Drivers License",
+                                "issuing_principality": "AUD"
+                            }
+                        }
+                    }
+                },
+                "summary": "Add new evidence of identity",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID of the user in uuid form",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ]
+            },
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "summary": "List all evidence",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID of the user in uuid form",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ]
+            }
+        },
+        "/users/{user_id}/profile/evidence/{evidence_id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "summary": "Get evidence details",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "something",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "evidence_id",
+                        "in": "path",
+                        "description": "something",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ]
+            }
+        },
+        "/users/{user_id}/identity/transactions": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "summary": "Get transactions",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ]
+            }
+        },
+        "/users/{user_id}/identity/bind": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    },
+                    "202": {
+                        "description": "Accepted",
+                        "headers": {},
+                        "examples": {}
+                    }
+                },
+                "summary": "Bind identity",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ]
+            },
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "summary": "Retrieve binding result",
+                "description": "",
+                "tags": [
+                    "Users"
+                ],
                 "parameters": [],
                 "produces": [
                     "application/json"
@@ -45,48 +378,11 @@
         }
     },
     "definitions": {
-        "Questions Collection": {},
-        "Question": {
-            "type": "object",
-            "required": [
-                "question",
-                "published_at",
-                "url",
-                "choices"
-            ],
-            "properties": {
-                "question": {
-                    "type": "string"
-                },
-                "published_at": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "choices": {
-                    "type": "array"
-                }
-            }
-        },
-        "Choice": {
-            "type": "object",
-            "required": [
-                "choice",
-                "url",
-                "votes"
-            ],
-            "properties": {
-                "choice": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "votes": {
-                    "type": "number"
-                }
-            }
-        }
+        "User": {},
+        "Devices": {},
+        "Identity profile": {},
+        "Evidence of Identity": {},
+        "Transactions History": {},
+        "Binding": {}
     }
 }

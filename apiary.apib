@@ -1,80 +1,256 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: http://noname7.apiblueprint.org/
 
-# Polls API
+# Identity API
 
-This is where people get resturant reviews
+## Schemas
 
-## Questions Collection [/questions]
+All API access is over https and accessed from api.databank.com.au (change later). All data is sent and received as JSON.
 
-### List All Questions [GET]
+Blank fields are included as null instead of being omitted.
 
-+ Response 200 (application/json)
+All timestamps are returned in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ
 
-        [
+#### Summary representations
+
+When you fetch a list of resources, the response includes a subset of the attributes for each resource.
+
+*Example* Fetching the documents for the ando identity returns the summary representation of each document
+```
+GET /identities/ando/documents
+```
+
+#### Detailed representations
+
+When you fetch a specific resource, the response typically includes all attributes for that resource.
+
+*Example* Fetching the document owned by ando returns the detailed representation of that document
+```
+GET /identities/ando/documents/1234
+```
+
+#### Parameters
+
+For GET requests, optional parameters not specified as a path parameter are passed as HTTP query string parameter
+```
+curl -i "http://api.databank.com/identities?delegated=true"
+```
+
+For POST, PUT, PATCH and DELETE requests, parameters not in the URL should be JSON encoded with Content Type 'application/json'
+
+#### Errors
+
+
+## Group Users
+
+## User [/users]
+
+All endpoints bar POST /users are secured. If a request is made to these endpoints without a JWT token then "404 Not Found" is returned rather than a "401 Unauthorised". This is done so as not to disclose the existence of user data.
+
+### New user [POST]
+
++ request (application/json)
+
+    + Attributes
+        + first_name (string) - First name
+        + last_name (string) - Last name
+        + email (string) - Email
+        + login (string) - Login??? username???
+
+    + body
+
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
+                "first_name": "david",
+                "last_name": "honeypot",
+                "email": "david@honeypot.com",
+                "login": "davidhoneypot"
             }
-        ]
 
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
-
-+ Request (application/json)
++ response 201 (application/json)
 
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "id": "uuid",
+            "login": "david@honeypot.com",
+            "email": "david@honeypot.com",
+            "type": "guest",
+            "created_at": "2000-01-01T01:11:11Z",
+            "updated_at": "2000-01-01T01:11:11Z"
+            "authorization_token": "token"
         }
 
-+ Response 201 (application/json)
+### Get account [GET /users/{user_id}]
+
++ request
 
     + Headers
 
-            Location: /questions/2
+            Authorization: OAuth token
 
-    + Body
++ response 200 (application/json)
+
+        {
+            "id": "1",
+            "login": "davidhoneypot",
+            "email": "david@honeypot.com",
+            "type": "user",
+            "created_at": "2000-01-01T01:11:11Z",
+            "updated_at": "2000-01-01T01:11:11Z"
+        }
+
+### Update the account [PATCH /users/{user_id}]
+
++ request
+
+        {
+            "login": "",
+            "email": ""
+        }
+
++ response 200
+
+        {
+
+        }
+
+## Devices [/users/{user_id}/devices]
+
+### Add device [POST]
+
++ response 201 (application/json)
 
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+
+            }
+
+### List devices [GET]
+
++ response 200 (application/json)
+
+            {
+
+            }
+
+### Get device [GET /users/{user_id}/devices/{device_id}]
+
++ response 200 (application/json)
+
+            {
+
+            }
+
+### Delete device [DELETE /users/{user_id}/devices/{device_id}]
+
++ response 200 (application/json)
+
+            {
+
+            }
+
+## Identity profile [/profile]
+
+### Get identity profile [GET /users/{user_id}/identity]
+
++ response 200 (application/json)
+
+    + Headers
+
+            Location: /identity/{id}
+
+    + body
+
+            {
+                id:"123"
+            }
+
+## Evidence of Identity [/users/{user_id}/identity/evidence]
+
++ Parameters
+    + user_id (required, string) - ID of the user in uuid form
+
+
+### Add new evidence of identity [POST]
+
++ Headers
+    + Authorisation: Bearer JWT
+
++ request (application/json)
+
+            {
+                "issuing_principality": "AUD",
+                "type_code": 1234
+            }
+
++ response 201 (application/json)
+
+            {
+              "id": "abcd1234",
+              "type_code": 1234,
+              "type_description": "Victoria Drivers License",
+              "issuing_principality": "AUD"
+            }
+
+### List all evidence [GET]
+
++ response 200 (application/json)
+
+            {
+
+            }
+
+### Get evidence details [GET /users/{user_id}/profile/evidence/{evidence_id}]
+
++ parameters
+    + user_id (required, string) - something
+    + evidence_id (required, string) - something
+
++ response 200 (application/json)
+
+            {
+
+            }
+
+## Transactions History [/users/{user_id}/identity/transactions]
+
+
+### Get transactions [GET]
+
++ response 200 (application/json)
+
+        {
+
+        }
+
+
+## Binding [/users/{user_id}/identity/bind]
+
+Supports synchronous binding through biometrics or asynchronous binding through human assisted video chat.
+
+### Bind identity [POST]
+
++ response 200 (application/json)
+
+        {
+
+        }
+
++ response 202 (application/json)
+
+        {
+            "binding_session_id": "123",
+            "binding_type: "video"
+        }
+
+### Retrieve binding result [GET]
+
+
++ response 200 (application/json)
+
+            {
+
+            }
+
++ response 404 (application/json)
+
+            {
+
             }
