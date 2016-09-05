@@ -1,0 +1,92 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "msontest",
+        "version": "",
+        "description": "Polls is a simple API allowing consumers to view polls and vote in them.\n\n"
+    },
+    "paths": {
+        "/questions": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "question": "Favourite programming language?",
+                                    "published_at": "2014-11-11T08:40:51.620Z",
+                                    "url": "/questions/1",
+                                    "choices": [
+                                        {
+                                            "choice": "Javascript",
+                                            "url": "/questions/1/choices/1",
+                                            "votes": 2048
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "schema": {
+                            "$schema": "http://json-schema.org/draft-04/schema#",
+                            "type": "array"
+                        }
+                    }
+                },
+                "summary": "List All Questions",
+                "description": "",
+                "tags": [],
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "Questions Collection": {},
+        "Question": {
+            "type": "object",
+            "required": [
+                "question",
+                "published_at",
+                "url",
+                "choices"
+            ],
+            "properties": {
+                "question": {
+                    "type": "string"
+                },
+                "published_at": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "choices": {
+                    "type": "array"
+                }
+            }
+        },
+        "Choice": {
+            "type": "object",
+            "required": [
+                "choice",
+                "url",
+                "votes"
+            ],
+            "properties": {
+                "choice": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "votes": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}
